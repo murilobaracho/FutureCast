@@ -1,14 +1,3 @@
-const NEON_URL = 'postgresql://neondb_owner:npg_t2LcrZEXCmx8@ep-fancy-dream-actr329k-pooler.sa-east-1.aws.neon.tech/BD%2FFUTURECAST?sslmode=require&channel_binding=require';
-let _sql = null;
-
-async function sql(query, params = []) {
-  if (!_sql) {
-    const { neon } = await import('https://esm.sh/@neondatabase/serverless@0.10.4');
-    _sql = neon(NEON_URL);
-  }
-  return _sql(query, params);
-}
-
 function lerLocal(c) { try { return JSON.parse(localStorage.getItem(c)) || {}; } catch { return {}; } }
 function salvarLocal(c, d) { localStorage.setItem(c, JSON.stringify(d)); }
 function usuario() { return lerLocal('futurecast_usuario'); }
@@ -27,6 +16,13 @@ function inicializarHamburger() {
       links.classList.remove('aberto');
       btn.classList.remove('ativo');
     }
+  });
+}
+
+function marcarLinkAtivo() {
+  const atual = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links .navegacao').forEach(a => {
+    if (a.getAttribute('href') === atual) a.setAttribute('aria-current', 'page');
   });
 }
 
@@ -159,9 +155,19 @@ async function inicializarComentarios(wrapper, card, postId, titulo) {
       const item = document.createElement('div');
       item.className = 'item-comentario';
       const ts = c.feito_em ? new Date(c.feito_em).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
-      item.innerHTML = '<strong class="autor-comentario">' + (c.autor || 'Anônimo') + '</strong>' +
-        '<span class="texto-comentario">' + c.conteudo + '</span>' +
-        (ts ? '<small class="data-comentario">' + ts + '</small>' : '');
+      const autor = document.createElement('strong');
+      autor.className = 'autor-comentario';
+      autor.textContent = c.autor || 'Anônimo';
+      const texto = document.createElement('span');
+      texto.className = 'texto-comentario';
+      texto.textContent = c.conteudo;
+      item.append(autor, texto);
+      if (ts) {
+        const data = document.createElement('small');
+        data.className = 'data-comentario';
+        data.textContent = ts;
+        item.appendChild(data);
+      }
       divLista.appendChild(item);
     });
     divLista.scrollTop = divLista.scrollHeight;
@@ -255,6 +261,8 @@ window.inicializarCard = inicializarCard;
 
 async function inicializar() {
   inicializarHamburger();
+  document.querySelector('.nav-links a[href="index.html"]')?.addEventListener('click', sair);
+  marcarLinkAtivo();
   inicializarSaudacao();
   const cards = [...document.querySelectorAll('.card')];
   if (cards.length) await Promise.all(cards.map(c => inicializarCard(c, null, null)));

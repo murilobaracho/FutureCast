@@ -1,11 +1,3 @@
-async function sql(query, params = []) {
-  if (!_sql) {
-    const { neon } = await import('https://esm.sh/@neondatabase/serverless@0.10.4');
-    _sql = neon(NEON_URL);
-  }
-  return _sql(query, params);
-}
-
 function lerLocal(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch { return {}; } }
 function usuario() { return lerLocal('futurecast_usuario'); }
 function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

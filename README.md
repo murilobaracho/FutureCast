@@ -41,3 +41,16 @@ O repositório está organizado da seguinte forma:
 ├── index.html              # Página de entrada/landing page e login
 ├── minha-conta.html        # Perfil completo do utilizador logado
 └── README.md               # Documentação oficial do projeto
+
+
+---
+
+## 🔐 Banco de dados e segurança
+
+O site roda 100% no **GitHub Pages** e acessa o Neon direto do navegador. Como não há servidor, a conexão fica visível para quem abrir o site; por isso ela deve usar uma **role com permissões mínimas**, nunca o `neondb_owner`.
+
+1. No Neon, gere uma senha nova para o `neondb_owner` (a antiga ficou no histórico público do Git).
+2. No SQL Editor do Neon, rode [banco/seguranca.sql](banco/seguranca.sql) (troque a senha dentro dele). Isso cria a role `futurecast_web`, que só lê/insere o necessário: não apaga nada, não altera tabelas e não lê `senha_hash`.
+3. Coloque a URL dessa role em [src/scripts/config.js](src/scripts/config.js), faça commit e push.
+
+> O login não valida senha e a identidade fica no navegador. Qualquer visitante consegue entrar com o e-mail de outra pessoa e editar o perfil dela. Corrigir isso exige um servidor ou login gerenciado (ex.: Supabase).

@@ -1,12 +1,3 @@
-let _sqlConta = null;
-async function sqlConta(query, params = []) {
-  if (!_sqlConta) {
-    const { neon } = await import('https://esm.sh/@neondatabase/serverless@0.10.4');
-    _sqlConta = neon('postgresql://neondb_owner:npg_t2LcrZEXCmx8@ep-fancy-dream-actr329k-pooler.sa-east-1.aws.neon.tech/BD%2FFUTURECAST?sslmode=require&channel_binding=require');
-  }
-  return _sqlConta(query, params);
-}
-
 function lerLocal(c) { try { return JSON.parse(localStorage.getItem(c)) || {}; } catch { return {}; } }
 function salvarLocal(c, d) { localStorage.setItem(c, JSON.stringify(d)); }
 function usuario() { return lerLocal('futurecast_usuario'); }
@@ -42,7 +33,7 @@ async function carregarDados() {
   document.getElementById('email-exibicao').textContent = u.email || '—';
 
   try {
-    const r = await sqlConta('SELECT nome, telefone, foto_url FROM usuario WHERE email = $1', [u.email]);
+    const r = await sql('SELECT nome, telefone, foto_url FROM usuario WHERE email = $1', [u.email]);
     if (r.length) {
       const d = r[0];
       if (d.nome)     { document.getElementById('campo-nome').value = d.nome; document.getElementById('nome-exibicao').textContent = d.nome; }
@@ -71,7 +62,7 @@ async function salvarConta(e) {
   btn.textContent = 'Salvando…';
 
   try {
-    await sqlConta(
+    await sql(
       'UPDATE usuario SET nome = $1, telefone = $2, foto_url = $3 WHERE email = $4',
       [nome, telRaw ? parseInt(telRaw, 10) : null, fotoUrl, u.email]
     );
