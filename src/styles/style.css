@@ -399,7 +399,7 @@ form.form-contate input:focus,
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
     gap: 24px;
-    align-items: start;
+    align-items: stretch;
     max-width: 1120px;
     margin: 32px auto 0;
     padding: 0 24px 120px;
@@ -408,12 +408,14 @@ form.form-contate input:focus,
 .card-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    position: relative;
     min-width: 0;
     animation: aparecer-card .5s var(--ease) both;
 }
+.card-wrapper:has(.secao-comentarios:not([hidden])) { z-index: 30; }
 
 .card {
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     background: var(--surface);
@@ -447,7 +449,7 @@ form.form-contate input:focus,
 .card .imagem img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
 .card:hover .imagem img { transform: scale(1.04); }
 
-.card .conteudo { padding: 18px 18px 8px; }
+.card .conteudo { flex: 1 1 auto; padding: 18px 18px 8px; }
 .card .conteudo .titulo {
     margin: 0 0 8px;
     font-size: 18px;
@@ -476,7 +478,7 @@ form.form-contate input:focus,
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-top: 10px;
+    margin-top: auto;
     padding: 8px 12px 12px;
     border-top: 1px solid var(--border);
 }
@@ -516,6 +518,11 @@ form.form-contate input:focus,
 
 /* Comentários */
 .secao-comentarios {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -524,7 +531,7 @@ form.form-contate input:focus,
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     animation: aparecer-card .3s var(--ease);
 }
 .secao-comentarios[hidden] { display: none; }
